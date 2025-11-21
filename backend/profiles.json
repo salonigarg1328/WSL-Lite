@@ -1,0 +1,70 @@
+{
+    "ci-lite": [
+        "bash",
+        "git",
+        "curl"
+    ],
+    "dev-lite": [
+        "bash",
+        "curl",
+        "git",
+        "nano",
+        "vim",
+        "wget",
+        "zip",
+        "unzip",
+        "tar",
+        "sudo",
+        "build-base",
+        "make",
+        "cmake",
+        "gcc",
+        "g++",
+        "musl-dev",
+        "py3-virtualenv",
+        "nodejs",
+        "npm",
+        "openssh-client"
+    ],
+    "data-lite": [
+        "bash",
+        "curl",
+        "git",
+        "nano",
+        "wget",
+        "tar",
+        "zip",
+        "unzip",
+        "sudo",
+        "python3",
+        "py3-pip",
+        "py3-setuptools",
+        "py3-numpy",
+        "py3-pandas",
+        "py3-matplotlib",
+        "py3-psutil"
+    ],
+    "custom-lite": [
+        "bash",
+        "git"
+    ],
+    "cli-lite": [
+        "bash",
+        "curl",
+        "git",
+        "nano",
+        "vim",
+        "wget",
+        "zip",
+        "unzip",
+        "tar",
+        "coreutils",
+        "util-linux",
+        "grep",
+        "sed",
+        "less",
+        "python3",
+        "py3-pip",
+        "py3-setuptools"
+    ]
+}

@@ -1,0 +1,942 @@
+// import React, { useState } from "react";
+
+// // Single-file React component (default export) built with TailwindCSS + Framer Motion
+// // Drop into a React app (Vite or CRA). Tailwind must be configured in the app.
+
+// import { motion, AnimatePresence } from "framer-motion";
+
+// const PROFILES = {
+//   "cli-lite": {
+//     title: "CLI Lite",
+//     desc: "Minimal command-line profile with a curated set of useful CLI tools.",
+//     libs: [
+//       { id: "bash", name: "bash" },
+//       { id: "git", name: "git" },
+//       { id: "curl", name: "curl" },
+//       { id: "wget", name: "wget" },
+//       { id: "htop", name: "htop" },
+//     ],
+//   },
+//   "dev-lite": {
+//     title: "Dev Lite",
+//     desc: "Development toolchain: editor, compilers and helpers.",
+//     libs: [
+//       { id: "gcc", name: "gcc" },
+//       { id: "make", name: "make" },
+//       { id: "zsh", name: "zsh" },
+//       { id: "nano", name: "nano" },
+//       { id: "docker-cli", name: "docker-cli" },
+//     ],
+//   },
+//   "data-lite": {
+//     title: "Data Lite",
+//     desc: "Python, scientific libs and lightweight data tools.",
+//     libs: [
+//       { id: "python3", name: "python3" },
+//       { id: "pip", name: "pip" },
+//       { id: "numpy", name: "numpy" },
+//       { id: "pandas", name: "pandas" },
+//       { id: "jupyter", name: "jupyter" },
+//     ],
+//   },
+// };
+
+// export default function WslLiteLanding() {
+//   const [activeProfile, setActiveProfile] = useState("cli-lite");
+//   const [selectedLibs, setSelectedLibs] = useState({
+//     "cli-lite": new Set(),
+//     "dev-lite": new Set(),
+//     "data-lite": new Set(),
+//   });
+//   const [installLog, setInstallLog] = useState([]);
+//   const [installing, setInstalling] = useState(false);
+//   const [progress, setProgress] = useState(0);
+
+//   function toggleLib(profileKey, libId) {
+//     setSelectedLibs((prev) => {
+//       const copy = { ...prev };
+//       const set = new Set(copy[profileKey]);
+//       if (set.has(libId)) set.delete(libId);
+//       else set.add(libId);
+//       copy[profileKey] = set;
+//       return copy;
+//     });
+//   }
+
+//   async function fakeInstall(profileKey) {
+//     // simulate installation process
+//     setInstalling(true);
+//     setInstallLog((l) => [...l, `Starting install for ${PROFILES[profileKey].title}...`]);
+//     setProgress(0);
+//     const libs = Array.from(selectedLibs[profileKey]);
+//     const total = Math.max(1, libs.length);
+//     for (let i = 0; i < total; i++) {
+//       await new Promise((r) => setTimeout(r, 600));
+//       const pct = Math.round(((i + 1) / total) * 100);
+//       setProgress(pct);
+//       setInstallLog((ll) => [...ll, `Installed: ${libs[i] ?? PROFILES[profileKey].libs[i].name}`]);
+//     }
+//     await new Promise((r) => setTimeout(r, 400));
+//     setInstallLog((l) => [...l, "✅ Installation complete."]);
+//     setInstalling(false);
+//     setProgress(0);
+//   }
+
+//   const profile = PROFILES[activeProfile];
+
+//   return (
+//     <div className="min-h-screen bg-[#0b1220] text-slate-200 font-sans">
+//       <header className="max-w-6xl mx-auto p-6 flex items-center justify-between">
+//         <div className="flex items-center gap-4">
+//           <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-black font-bold">WL</div>
+//           <div>
+//             <div className="text-lg font-bold">WSL-Lite</div>
+//             <div className="text-sm text-slate-400">Lightweight, branded WSL distributions</div>
+//           </div>
+//         </div>
+//         <nav className="flex items-center gap-4">
+//           <a className="text-slate-300 hover:text-white" href="#">Home</a>
+//           <a className="text-slate-300 hover:text-white" href="#credits">Credits</a>
+//           <button className="bg-cyan-500 hover:bg-cyan-400 text-black px-4 py-2 rounded-md">Download</button>
+//         </nav>
+//       </header>
+
+//       <main className="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+//         {/* Left - hero */}
+//         <section className="space-y-6">
+//           <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight">WSL-Lite — fast, minimal WSL distros with your branding</h1>
+//           <p className="text-lg text-slate-400">Create lightweight Alpine-based WSL installations, pre-baked profiles, automatic neofetch banners, and a custom terminal identity — easily and reproducibly.</p>
+
+//           <div className="flex gap-3 mt-4">
+//             <button className="bg-cyan-500 hover:bg-cyan-400 text-black px-5 py-3 rounded-md font-semibold">Get the installer</button>
+//             <button className="border border-slate-700 px-5 py-3 rounded-md text-slate-300 hover:border-slate-500">Read docs</button>
+//           </div>
+
+//           <div className="mt-6 bg-slate-800 p-4 rounded-lg">
+//             <h3 className="text-sm text-slate-300 mb-2">Quick install (Windows PowerShell):</h3>
+//             <pre className="bg-transparent text-sm p-2 rounded text-slate-200">curl -LO &lt;installer-url&gt; &amp;&amp; python3 wsl_lite_installer.py</pre>
+//           </div>
+
+//           <div className="mt-8">
+//             <h3 className="text-sm text-slate-300 mb-2">Profiles</h3>
+//             <div className="flex gap-3">
+//               {Object.keys(PROFILES).map((k) => (
+//                 <button
+//                   key={k}
+//                   onClick={() => setActiveProfile(k)}
+//                   className={`px-4 py-2 rounded-md ${activeProfile === k ? "bg-slate-700 text-white" : "bg-transparent border border-slate-700 text-slate-300"}`}
+//                 >
+//                   {PROFILES[k].title}
+//                 </button>
+//               ))}
+//             </div>
+
+//             <motion.div layout className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
+//               {/* Left card - CLI list (default view) */}
+//               <motion.div layout className="col-span-1 bg-slate-800 p-4 rounded-lg">
+//                 <h4 className="font-bold">{profile.title}</h4>
+//                 <p className="text-slate-400 text-sm">{profile.desc}</p>
+
+//                 <div className="mt-4 space-y-2">
+//                   {profile.libs.map((lib) => (
+//                     <div key={lib.id} className="flex items-center justify-between bg-slate-900/30 p-2 rounded">
+//                       <div className="flex items-center gap-3">
+//                         <div className="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs">{lib.name.charAt(0).toUpperCase()}</div>
+//                         <div>
+//                           <div className="text-sm font-medium">{lib.name}</div>
+//                           <div className="text-xs text-slate-400">package</div>
+//                         </div>
+//                       </div>
+//                       <div>
+//                         <input
+//                           type="checkbox"
+//                           checked={selectedLibs[activeProfile].has(lib.id)}
+//                           onChange={() => toggleLib(activeProfile, lib.id)}
+//                         />
+//                       </div>
+//                     </div>
+//                   ))}
+//                 </div>
+
+//                 <div className="mt-4">
+//                   <button disabled={installing} onClick={() => fakeInstall(activeProfile)} className="w-full bg-emerald-500 hover:bg-emerald-400 text-black px-4 py-2 rounded-md font-semibold">Install</button>
+//                 </div>
+//               </motion.div>
+
+//               {/* Middle - Customize / selection summary */}
+//               <motion.div layout className="col-span-1 lg:col-span-2 bg-slate-800 p-4 rounded-lg">
+//                 <h4 className="font-bold">Customize</h4>
+//                 <p className="text-slate-400 text-sm">Select libraries from the left panel. This view shows what will be installed for <span className="font-medium">{profile.title}</span>.</p>
+
+//                 <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+//                   {profile.libs.map((lib) => (
+//                     <div key={lib.id} className="flex items-center justify-between bg-slate-900/30 p-2 rounded">
+//                       <div className="flex items-center gap-3">
+//                         <div className="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-xs">{lib.name.charAt(0).toUpperCase()}</div>
+//                         <div>
+//                           <div className="text-sm font-medium">{lib.name}</div>
+//                           <div className="text-xs text-slate-400">{selectedLibs[activeProfile].has(lib.id) ? 'Selected' : 'Not selected'}</div>
+//                         </div>
+//                       </div>
+//                       <div>
+//                         <button onClick={() => toggleLib(activeProfile, lib.id)} className={`px-3 py-1 rounded ${selectedLibs[activeProfile].has(lib.id) ? 'bg-slate-700' : 'bg-transparent border border-slate-700'}`}>{selectedLibs[activeProfile].has(lib.id) ? 'Remove' : 'Add'}</button>
+//                       </div>
+//                     </div>
+//                   ))}
+//                 </div>
+
+//                 <div className="mt-6">
+//                   <div className="bg-slate-900 p-3 rounded">
+//                     <div className="text-sm text-slate-400">Selected packages:</div>
+//                     <div className="mt-2 text-sm text-slate-200">{Array.from(selectedLibs[activeProfile]).join(', ') || 'none'}</div>
+//                   </div>
+
+//                   <div className="mt-4">
+//                     <button disabled={installing} onClick={() => fakeInstall(activeProfile)} className="bg-emerald-500 hover:bg-emerald-400 text-black px-4 py-2 rounded-md">Install selected</button>
+//                   </div>
+
+//                   <AnimatePresence>
+//                     {installing && (
+//                       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="mt-4">
+//                         <div className="w-full bg-slate-700 rounded overflow-hidden">
+//                           <div className="bg-emerald-400 h-2" style={{ width: `${progress}%` }} />
+//                         </div>
+//                         <div className="text-xs text-slate-400 mt-2">Progress: {progress}%</div>
+//                       </motion.div>
+//                     )}
+//                   </AnimatePresence>
+
+//                 </div>
+
+//                 <div className="mt-6 bg-slate-900 p-3 rounded h-40 overflow-auto">
+//                   <div className="text-xs text-slate-400">Installer log:</div>
+//                   <div className="text-xs text-slate-200 mt-2">
+//                     {installLog.length === 0 ? 'No activity' : installLog.map((l, i) => <div key={i}>{l}</div>)}
+//                   </div>
+//                 </div>
+
+//               </motion.div>
+//             </motion.div>
+//           </div>
+//         </section>
+
+//         {/* Right - ASCII preview + stats */}
+//         <aside className="space-y-4">
+//           <div className="bg-slate-800 p-4 rounded-lg">
+//             <div className="flex items-start gap-4">
+//               <div className="ascii-box text-white flex-1 overflow-x-auto">
+//                 <pre className="text-xs leading-tight">{`⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡀⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣖⣤⣶⣶⣿⠟⠉⠉⠀⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⣠⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿⣷⣶⣶⣦⣤⣀⠀⠀⠀⠀
+// ⠀⠀⠀⢰⣿⣶⣾⣿⣿⣿⣿⣿⣿⡿⠿⣿⣿⣿⣿⣯⣍⠁⠀⠀⠀
+// ⠀⠀⠀⠹⣿⠻⡅⠀⣠⠉⣹⣿⠿⠛⠃⠀⢹⣿⣿⣿⣿⣷⣄⠀⠀
+// ⠀⠀⠀⢰⣄⣠⣴⠟⠁⢀⣿⠁⠀⠀⠀⣠⣿⣿⣿⣿⣿⣏⠉⠓⠀
+// ⠀⠀⠀⠰⢿⡿⠋⠐⠿⣿⡿⣋⣤⣶⣿⣿⣿⣿⠏⣼⣿⣿⣇⠀⠀
+// ⠀⠀⠀⢀⣠⣴⣶⠞⣠⣶⣿⣿⣿⣿⣿⡿⠋⣡⣾⣿⡿⠈⢿⠀⠀
+// ⠀⠀⢈⣽⣿⠏⣰⣿⣿⣿⣿⣿⠟⠉⠀⠰⠚⠋⢁⣿⠃⠀⠀⢸⠀
+// ⠀⢠⣿⣿⢃⣼⣿⣿⣿⣿⠏⠀⡀⠀⠀⠀⠀⠀⠞⠁⠀⠀⢠⣿⠁
+// ⠠⠟⣾⡏⣼⣿⣿⣿⣿⠃⣠⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⡟⠀
+// ⠀⠀⢹⡇⣿⣿⣿⣿⣿⠀⣿⣿⣷⣄⣀⠀⢀⣀⣠⣴⣿⣿⠟⠀⠀
+// ⠀⠀⠀⠃⢻⣿⣿⣿⣿⣆⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⣁⣤⡶⠃
+// ⠀⠀⠀⠀⠀⢯⠘⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠁⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠙⠻⢿⣿⣿⣿⣿⣿⣷⡶⠶⠂⠀⠀⠀⠀⠀
+// ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀`}</pre>
+//               </div>
+//             </div>
+
+            // <div className="mt-4 bg-slate-900 p-3 rounded">
+            //   <div id="stats" className="text-sm text-slate-300 space-y-1">
+            //     <div><span className="text-yellow-400">OS</span>: <span className="text-green-400">Alpine Linux v3.20 • WSL-Lite</span></div>
+            //     <div><span className="text-yellow-400">Kernel</span>: <span className="text-green-400">6.6.87.2-microsoft-standard-WSL2</span></div>
+            //     <div><span className="text-yellow-400">Uptime</span>: <span className="text-green-400">24 mins</span></div>
+            //     <div><span className="text-yellow-400">Memory</span>: <span className="text-green-400">322MiB / 7794MiB</span></div>
+            //   </div>
+            // </div>
+
+//           </div>
+
+//           <div className="bg-slate-800 p-4 rounded-lg text-sm text-slate-400">
+//             <h4 className="font-bold text-slate-200">Quick actions</h4>
+//             <ul className="mt-2 space-y-2">
+//               <li><a href="#" className="text-cyan-300">Download installer</a></li>
+//               <li><a href="#" className="text-cyan-300">Docs &amp; usage</a></li>
+//               <li><a href="#" className="text-cyan-300">Windows Terminal profile</a></li>
+//             </ul>
+//           </div>
+//         </aside>
+//       </main>
+
+//       <footer className="max-w-6xl mx-auto p-6 text-center text-slate-500 text-sm">Built with ❤️ by WSL-Lite — <a className="text-cyan-300" href="#">Contribute on GitHub</a></footer>
+//     </div>
+//   );
+// }
+
+
+
+{/* <aside className="space-y-4">
+                  <div className="bg-slate-800 p-4 rounded-lg">
+                    <div className="ascii-box text-white flex-1 overflow-x-auto">
+                      <pre className="text-xs leading-tight">{`⠀⠀⠀⠀⠀⠀⠀⠀⠀                        WSL-LITE⠀⠀⠀⠀⠀⠀⠀⠀⠀
+                                          ⡀⠀⠀⠀⠀⠀⠀
+                    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣖⣤⣶⣶⣿⠟⠉⠉⠀⠀⠀⠀⠀⠀
+                    ⠀⠀⠀⠀⣠⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿⣷⣶⣶⣦⣤⣀⠀⠀⠀⠀
+                    ⠀⠀⠀⢰⣿⣶⣾⣿⣿⣿⣿⣿⣿⡿⠿⣿⣿⣿⣿⣯⣍⠁⠀⠀⠀
+                    ⠀⠀⠀⠹⣿⠻⡅⠀⣠⠉⣹⣿⠿⠛⠃⠀⢹⣿⣿⣿⣿⣷⣄⠀⠀
+                    ⠀⠀⠀⢰⣄⣠⣴⠟⠁⢀⣿⠁⠀⠀⠀⣠⣿⣿⣿⣿⣿⣏⠉⠓⠀
+                    ⠀⠀⠀⠰⢿⡿⠋⠐⠿⣿⡿⣋⣤⣶⣿⣿⣿⣿⠏⣼⣿⣿⣇⠀⠀
+                    ⠀⠀⠀⢀⣠⣴⣶⠞⣠⣶⣿⣿⣿⣿⣿⡿⠋⣡⣾⣿⡿⠈⢿⠀⠀
+                    ⠀⠀⢈⣽⣿⠏⣰⣿⣿⣿⣿⣿⠟⠉⠀⠰⠚⠋⢁⣿⠃⠀⠀⢸⠀
+                    ⠀⢠⣿⣿⢃⣼⣿⣿⣿⣿⠏⠀⡀⠀⠀⠀⠀⠀⠞⠁⠀⠀⢠⣿⠁
+                    ⠠⠟⣾⡏⣼⣿⣿⣿⣿⠃⣠⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⡟⠀
+                    ⠀⠀⢹⡇⣿⣿⣿⣿⣿⠀⣿⣿⣷⣄⣀⠀⢀⣀⣠⣴⣿⣿⠟⠀⠀
+                    ⠀⠀⠀⠃⢻⣿⣿⣿⣿⣆⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⣁⣤⡶⠃
+                    ⠀⠀⠀⠀⠀⢯⠘⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠁⠀⠀
+                    ⠀⠀⠀⠀⠀⠀⠀⠀⠙⠻⢿⣿⣿⣿⣿⣿⣷⡶⠶⠂⠀⠀⠀⠀⠀
+                    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀`}
+                    </pre>
+                    </div>
+
+                    <div className="mt-4 bg-slate-900 p-3 rounded">
+                    <div id="stats" className="text-sm text-slate-300 space-y-1">
+                      <div><span className="text-yellow-400">OS</span>: <span className="text-green-400">Alpine Linux v3.20 • WSL-Lite</span></div>
+                      <div><span className="text-yellow-400">Kernel</span>: <span className="text-green-400">6.6.87.2-microsoft-standard-WSL2</span></div>
+                      <div><span className="text-yellow-400">Uptime</span>: <span className="text-green-400">24 mins</span></div>
+                      <div><span className="text-yellow-400">Memory</span>: <span className="text-green-400">322MiB / 7794MiB</span></div>
+                    </div>
+                  </div>
+
+                  </div>
+                </aside>  */}
+                
+// import React, { useEffect, useRef, useState } from "react";
+// import { motion, AnimatePresence } from "framer-motion";
+
+// const [popupProfile, setPopupProfile] = useState(null);
+
+// const ALL_LIBS = [
+//   { id: "bash", name: "bash" },
+//   { id: "git", name: "git" },
+//   { id: "curl", name: "curl" },
+//   { id: "wget", name: "wget" },
+//   { id: "htop", name: "htop" },
+//   { id: "gcc", name: "gcc" },
+//   { id: "make", name: "make" },
+//   { id: "zsh", name: "zsh" },
+//   { id: "nano", name: "nano" },
+//   { id: "docker-cli", name: "docker-cli" },
+//   { id: "python3", name: "python3" },
+//   { id: "pip", name: "pip" },
+//   { id: "numpy", name: "numpy" },
+//   { id: "pandas", name: "pandas" },
+//   { id: "jupyter", name: "jupyter" },
+// ];
+
+// const [customQuery, setCustomQuery] = useState("");
+// const [customLibs, setCustomLibs] = useState(new Set());
+
+// const toggleCustomLib = (id) => {
+//   setCustomLibs((prev) => {
+//     const s = new Set(prev);
+//     s.has(id) ? s.delete(id) : s.add(id);
+//     return s;
+//   });
+// };
+
+
+// const PROFILES = {
+//   "cli-lite": {
+//     title: "CLI Lite",
+//     desc: "Minimal command-line profile with a curated set of useful CLI tools.",
+//     libs: [
+//       { id: "bash", name: "bash" },
+//       { id: "git", name: "git" },
+//       { id: "curl", name: "curl" },
+//       { id: "wget", name: "wget" },
+//       { id: "htop", name: "htop" },
+//     ],
+//   },
+//   "dev-lite": {
+//     title: "Dev Lite",
+//     desc: "Development toolchain: editor, compilers and helpers.",
+//     libs: [
+//       { id: "gcc", name: "gcc" },
+//       { id: "make", name: "make" },
+//       { id: "zsh", name: "zsh" },
+//       { id: "nano", name: "nano" },
+//       { id: "docker-cli", name: "docker-cli" },
+//     ],
+//   },
+//   "data-lite": {
+//     title: "Data Lite",
+//     desc: "Python, scientific libs and lightweight useful data tools.",
+//     libs: [
+//       { id: "python3", name: "python3" },
+//       { id: "pip", name: "pip" },
+//       { id: "numpy", name: "numpy" },
+//       { id: "pandas", name: "pandas" },
+//       { id: "jupyter", name: "jupyter" },
+//     ],
+//   },
+// };
+
+import React, { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+const ALL_LIBS = [
+  { id: "bash", name: "bash" },
+  { id: "git", name: "git" },
+  { id: "curl", name: "curl" },
+  { id: "wget", name: "wget" },
+  { id: "htop", name: "htop" },
+  { id: "gcc", name: "gcc" },
+  { id: "make", name: "make" },
+  { id: "zsh", name: "zsh" },
+  { id: "nano", name: "nano" },
+  { id: "docker-cli", name: "docker-cli" },
+  { id: "python3", name: "python3" },
+  { id: "pip", name: "pip" },
+  { id: "numpy", name: "numpy" },
+  { id: "pandas", name: "pandas" },
+  { id: "jupyter", name: "jupyter" },
+];
+
+const PROFILES = {
+  "cli-lite": {
+    title: "CLI Lite",
+    desc: "Minimal command-line profile with a curated set of useful CLI tools.",
+    libs: [
+      { id: "bash", name: "bash" },
+      { id: "git", name: "git" },
+      { id: "curl", name: "curl" },
+      { id: "wget", name: "wget" },
+      { id: "htop", name: "htop" },
+    ],
+  },
+  "dev-lite": {
+    title: "Dev Lite",
+    desc: "Development toolchain: editor, compilers and helpers.",
+    libs: [
+      { id: "gcc", name: "gcc" },
+      { id: "make", name: "make" },
+      { id: "zsh", name: "zsh" },
+      { id: "nano", name: "nano" },
+      { id: "docker-cli", name: "docker-cli" },
+    ],
+  },
+  "data-lite": {
+    title: "Data Lite",
+    desc: "Python, scientific libs and lightweight useful data tools.",
+    libs: [
+      { id: "python3", name: "python3" },
+      { id: "pip", name: "pip" },
+      { id: "numpy", name: "numpy" },
+      { id: "pandas", name: "pandas" },
+      { id: "jupyter", name: "jupyter" },
+    ],
+  },
+};
+
+
+// lightweight SVG icon map; add more as you like
+function Icon({ id, className = "w-6 h-6" }) {
+  switch (id) {
+    case "bash":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="4" width="20" height="16" rx="2" fill="#0f172a" stroke="#10b981" />
+          <path d="M7 9h10M7 12h10M7 15h6" stroke="#10b981" strokeWidth="1.2" strokeLinecap="round" />
+        </svg>
+      );
+    case "git":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none">
+          <path d="M3 12.5v2.5h7.2" stroke="#f97316" strokeWidth="1.5" strokeLinecap="round" />
+          <circle cx="6.5" cy="9.5" r="1.5" fill="#f97316" />
+          <circle cx="12.5" cy="6.5" r="1.5" fill="#f97316" />
+          <circle cx="17.5" cy="11.5" r="1.5" fill="#f97316" />
+          <path d="M12.5 6.5L9 10" stroke="#f97316" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+      );
+    case "python3":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none">
+          <path d="M7 3h6v3" stroke="#3776AB" strokeWidth="1.4" strokeLinecap="round" />
+          <path d="M17 21h-6v-3" stroke="#FFD43B" strokeWidth="1.4" strokeLinecap="round" />
+          <circle cx="9" cy="7.5" r="0.6" fill="#fff" />
+          <circle cx="15" cy="16.5" r="0.6" fill="#fff" />
+        </svg>
+      );
+    case "node":
+    case "npm":
+    case "docker-cli":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none">
+          <rect x="3" y="3" width="18" height="18" rx="3" stroke="#06b6d4" strokeWidth="1.4" />
+          <path d="M7 8h10M7 12h10M7 16h6" stroke="#06b6d4" strokeWidth="1.2" strokeLinecap="round" />
+        </svg>
+      );
+    case "numpy":
+    case "pandas":
+    case "jupyter":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none">
+          <rect x="4" y="4" width="16" height="16" rx="2" stroke="#8b5cf6" strokeWidth="1.4" />
+          <path d="M8 9h8M8 13h8M8 17h4" stroke="#8b5cf6" strokeWidth="1.2" strokeLinecap="round" />
+        </svg>
+      );
+    default:
+      // fallback: circle with initial
+      return (
+        <div className={`flex items-center justify-center rounded-full bg-slate-700 ${className}`}>
+          <span className="text-xs font-medium text-slate-200">{id.charAt(0).toUpperCase()}</span>
+        </div>
+      );
+  }
+}
+
+export default function WslLiteLanding() {
+  // ✅ All hooks must be here INSIDE the component
+  const [popupProfile, setPopupProfile] = useState(null);
+  const [customQuery, setCustomQuery] = useState("");
+  const [customLibs, setCustomLibs] = useState(new Set());
+  const [searchTerms, setSearchTerms] = useState({});
+  const [activeProfile, setActiveProfile] = useState("cli-lite");
+  const [selectedLibs, setSelectedLibs] = useState({
+    "cli-lite": new Set(),
+    "dev-lite": new Set(),
+    "data-lite": new Set(),
+  });
+  const [installLog, setInstallLog] = useState([]);
+  const [installing, setInstalling] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const isTransitioning = useRef(false);
+
+  const toggleCustomLib = (id) => {
+    setCustomLibs((prev) => {
+      const s = new Set(prev);
+      s.has(id) ? s.delete(id) : s.add(id);
+      return s;
+    });
+  };
+  
+// export default function WslLiteLanding() {
+//   const [searchTerms, setSearchTerms] = useState({});
+
+//   const handleSearchChange = (profileKey, value) => {
+//     setSearchTerms((prev) => ({ ...prev, [profileKey]: value }));
+//   };
+
+//   const [activeProfile, setActiveProfile] = useState("cli-lite");
+//   const [selectedLibs, setSelectedLibs] = useState({
+//     "cli-lite": new Set(),
+//     "dev-lite": new Set(),
+//     "data-lite": new Set(),
+//   });
+//   const [installLog, setInstallLog] = useState([]);
+//   const [installing, setInstalling] = useState(false);
+//   const [progress, setProgress] = useState(0);
+
+//   // slide state + direction
+//   const [currentSlide, setCurrentSlide] = useState(0); // 0 = home, 1 = profiles
+//   const [direction, setDirection] = useState(1); // 1 => user scrolled down (to next), -1 => up
+//   const isTransitioning = useRef(false);
+
+  // place this inside your component (where your previous useEffect wheel handler was)
+useEffect(() => {
+  // find closest ancestor that can scroll vertically
+  const getScrollableParent = (el) => {
+    while (el && el !== document.body) {
+      const style = window.getComputedStyle(el);
+      const overflowY = style.overflowY;
+      if ((overflowY === "auto" || overflowY === "scroll") && el.scrollHeight > el.clientHeight) {
+        return el;
+      }
+      el = el.parentElement;
+    }
+    return null;
+  };
+
+  const THRESH = 40;
+
+  const handleWheel = (e) => {
+    if (isTransitioning.current) return;
+
+    // normalize delta: positive -> scroll down
+    const delta = typeof e.deltaY === "number" ? e.deltaY : (typeof e.wheelDelta === "number" ? -e.wheelDelta : e.detail || 0);
+
+    // find any scrollable parent of the original event target
+    const target = e.target;
+    const scrollParent = getScrollableParent(target);
+
+    if (scrollParent) {
+      // If scrolling down and the scrollParent can still scroll down, let it handle the event
+      if (delta > 0 && scrollParent.scrollTop + scrollParent.clientHeight < scrollParent.scrollHeight) {
+        return; // allow inner scrolling
+      }
+      // If scrolling up and the scrollParent can still scroll up, let it handle the event
+      if (delta < 0 && scrollParent.scrollTop > 0) {
+        return; // allow inner scrolling
+      }
+      // otherwise (inner scroll at boundary): fall through to page-level slide handling
+    }
+
+    // Page-level slide handling
+    if (delta > THRESH && currentSlide === 0) {
+      setDirection(1);
+      isTransitioning.current = true;
+      setCurrentSlide(1);
+      setTimeout(() => (isTransitioning.current = false), 900);
+    } else if (delta < -THRESH && currentSlide === 1) {
+      setDirection(-1);
+      isTransitioning.current = true;
+      setCurrentSlide(0);
+      setTimeout(() => (isTransitioning.current = false), 900);
+    }
+  };
+
+  // Use passive: false so we could call e.preventDefault() later if needed.
+  window.addEventListener("wheel", handleWheel, { passive: false });
+  return () => window.removeEventListener("wheel", handleWheel);
+}, [currentSlide]);
+
+
+  function toggleLib(profileKey, libId) {
+    setSelectedLibs((prev) => {
+      const copy = { ...prev };
+      const s = new Set(copy[profileKey]);
+      if (s.has(libId)) s.delete(libId);
+      else s.add(libId);
+      copy[profileKey] = s;
+      return copy;
+    });
+  }
+
+  async function fakeInstall(profileKey) {
+    setInstalling(true);
+    setInstallLog((l) => [...l, `Starting install for ${PROFILES[profileKey].title}...`]);
+    setProgress(0);
+    const libs = Array.from(selectedLibs[profileKey]);
+    const total = Math.max(1, libs.length);
+    for (let i = 0; i < total; i++) {
+      await new Promise((r) => setTimeout(r, 500));
+      const pct = Math.round(((i + 1) / total) * 100);
+      setProgress(pct);
+      setInstallLog((ll) => [...ll, `Installed: ${libs[i] ?? PROFILES[profileKey].libs[i].name}`]);
+    }
+    await new Promise((r) => setTimeout(r, 300));
+    setInstallLog((l) => [...l, "✅ Installation complete."]);
+    setInstalling(false);
+    setProgress(0);
+  }
+
+  const profile = PROFILES[activeProfile];
+
+  // Variants use the direction to decide enter/exit positions:
+  // direction === 1  => user scrolled down: incoming should come FROM BOTTOM (100%), outgoing go TO TOP (-100%)
+  // direction === -1 => user scrolled up: incoming should come FROM TOP (-100%), outgoing go TO BOTTOM (100%)
+  const variants = {
+    enter: (dir) => ({
+      y: dir === 1 ? "100%" : "-100%",
+      opacity: 0,
+    }),
+    center: { y: "0%", opacity: 1 },
+    exit: (dir) => ({
+      y: dir === 1 ? "-100%" : "100%",
+      opacity: 0,
+    }),
+  };
+
+  return (
+    <div className="relative overflow-hidden bg-[#0b1220] text-slate-200 font-sans min-h-screen">
+      <AnimatePresence initial={false} mode="wait" custom={direction}>
+        <motion.div
+          key={currentSlide}
+          custom={direction}
+          variants={variants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ duration: 0.5, ease: "easeInOut" }}
+          className="absolute inset-0"
+        >
+          {currentSlide === 0 ? (
+            // HOME SLIDE (keeps original layout)
+            <div className="min-h-screen">
+              <header className="max-w-6xl mx-auto p-6 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-black font-bold">WL</div>
+                  <div>
+                    <div className="text-lg font-bold">WSL-Lite</div>
+                    <div className="text-sm text-slate-400">Lightweight, Customizable  WSL distributions</div>
+                  </div>
+                </div>
+                <nav className="flex items-center gap-4">
+                  <a className="text-slate-300 hover:text-white" href="#">Home</a>
+                  <a className="text-slate-300 hover:text-white" href="#credits">Credits</a>
+                  <button className="bg-cyan-500 hover:bg-cyan-400 text-black px-4 py-2 rounded-md">Download</button>
+                </nav>
+              </header>
+
+              <main className="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                {/* Left - hero */}
+                <section className="space-y-6">
+                  <h1 className="text-4xl sm:text-4xl font-extrabold leading-tight">WSL-Lite - Lightweight, Fast, and Fully Customizable WSL Distros</h1>
+                  <p className="text-lg text-slate-400">Create lightweight Alpine-based WSL installations with pre-configured profiles and optimized terminal setups for a streamlined experience.</p>
+
+                  <div className="flex gap-3 mt-4">
+                    <button className="bg-cyan-500 hover:bg-cyan-400 text-black px-5 py-3 rounded-md font-semibold">Get the installer</button>
+                    <button
+                      className="border border-slate-700 px-5 py-3 rounded-md text-slate-300 hover:border-slate-500"
+                      onClick={() => {
+                        // user clicked button -> treat as downward transition
+                        setDirection(1);
+                        setCurrentSlide(1);
+                        isTransitioning.current = true;
+                        setTimeout(() => (isTransitioning.current = false), 900);
+                      }}
+                    >
+                      Explore Profiles ↓
+                    </button>
+                  </div>
+
+                  <div className="mt-6 bg-slate-800 p-4 rounded-lg">
+                    <h3 className="text-sm text-slate-310 mb-2">Quick install (Windows PowerShell):</h3>
+                    <pre className="bg-transparent text-sm p-2 rounded text-slate-210">curl -LO &lt;installer-url&gt; &amp;&amp; python3 wsl_lite_installer.py</pre>
+                  </div>
+                  {/* <div className="bg-slate-800 p-4 rounded-lg text-sm text-slate-400">
+                    <h4 className="font-bold text-slate-200">Quick actions</h4>
+                    <ul className="mt-2 space-y-2">
+                      <li><a href="#" className="text-cyan-300">Download installer</a></li>
+                      <li><a href="#" className="text-cyan-300">Docs &amp; usage</a></li>
+                    </ul>
+                  </div> */}
+                </section>
+
+                {/* Right - ASCII preview + stats */}
+                <aside className="space-y-4">
+                  <div className="bg-slate-800 p-4 rounded-lg">
+                    <div className="ascii-box text-white flex-1 overflow-x-auto">
+                      <pre className="text-xs leading-tight text-center">
+                        {`  `}
+                        <span style={{ fontFamily: 'Times New Roman, sans-serif', fontSize: '2rem', color: '#ffc519e2', fontWeight: 'bold'}}>
+                          WSL-LITE
+                        </span>
+                        <br />
+                        <style>
+                        {`
+                          @keyframes pulseGlow {
+                            0% { text-shadow: 0 0 10px #00fff2, 0 0 20px #00ccff; }
+                            50% { text-shadow: 0 0 15px #00aaff, 0 0 30px #00ffff; }
+                            100% { text-shadow: 0 0 10px #00fff2, 0 0 20px #00ccff; }
+                          }
+                        `}
+                      </style>
+                        <span
+                          style={{
+                          color: '#00ff33ff',
+                          animation: 'pulseGlow 2s infinite',
+                          whiteSpace: 'pre',
+                          display: 'inline-block',
+                        }}
+                        >
+                          {`
+                      ⡀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣖⣤⣶⣶⣿⠟⠉⠉⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⣠⠀⠀⢀⣴⣿⣿⣿⣿⣿⣿⣷ⶶ⣶⣦⣤⣀⠀⠀⠀⠀
+⠀⠀⠀⢰⣿⣶⣾⣿⣿⣿⣿⣿⣿⡿⠿⣿⣿⣿⣿⣯⣍⠁⠀⠀⠀
+⠀⠀⠀⠹⣿⠻⡅⠀⣠⠉⣹⣿⠿⠛⠃⠀⢹⣿⣿⣿⣿⣷⣄⠀⠀
+⠀⠀⠀⢰⣄⣠⣴⠟⠁⢀⣿⠁⠀⠀⠀⣠⣿⣿⣿⣿⣿⣏⠉⠓⠀
+⠀⠀⠀⠰⢿⡿⠋⠐⠿⣿⡿⣋⣤⣶⣿⣿⣿⣿⠏⣼⣿⣿⣇⠀⠀
+⠀⠀⠀⢀⣠⣴⣶⠞⣠⣶⣿⣿⣿⣿⣿⡿⠋⣡⣾⣿⡿⠈⢿⠀⠀
+⠀⠀⢈⣽⣿⠏⣰⣿⣿⣿⣿⣿⠟⠉⠀⠰⠚⠋⢁⣿⠃⠀⠀⢸⠀
+⠀⢠⣿⣿⢃⣼⣿⣿⣿⣿⠏⠀⡀⠀⠀⠀⠀⠀⠞⠁⠀⠀⢠⣿⠁
+⠠⠟⣾⡏⣼⣿⣿⣿⣿⠃⣠⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⡟⠀
+⠀⠀⢹⡇⣿⣿⣿⣿⣿⠀⣿⣿⣷⣄⣀⠀⢀⣀⣠⣴⣿⣿⠟⠀⠀
+⠀⠀⠀⠃⢻⣿⣿⣿⣿⣆⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⣁⣤⡶⠃
+⠀⠀⠀⠀⠀⢯⠘⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠁⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠙⠻⢿⣿⣿⣿⣿⣿⣷⡶⠶⠂⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀
+
+
+`}
+                        </span>
+                      </pre>
+
+
+
+                    </div>
+
+                    <div className="mt-4 bg-slate-900 p-3 rounded">
+                      <div id="stats" className="text-sm text-slate-300 space-y-1">
+                        <div><span className="text-yellow-400">OS</span>: <span className="text-green-400">Alpine Linux v3.20 • WSL-Lite</span></div>
+                        <div><span className="text-yellow-400">Kernel</span>: <span className="text-green-400">6.6.87.2-microsoft-standard-WSL2</span></div>
+                        <div><span className="text-yellow-400">Uptime</span>: <span className="text-green-400">24 mins</span></div>
+                        <div><span className="text-yellow-400">Memory</span>: <span className="text-green-400">322MiB / 7794MiB</span></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* <div className="bg-slate-800 p-4 rounded-lg text-sm text-slate-400">
+                    <h4 className="font-bold text-slate-200">Quick actions</h4>
+                    <ul className="mt-2 space-y-2">
+                      <li><a href="#" className="text-cyan-300">Download installer</a></li>
+                      <li><a href="#" className="text-cyan-300">Docs &amp; usage</a></li>
+                      <li><a href="#" className="text-cyan-300">Windows Terminal profile</a></li>
+                    </ul>
+                  </div> */}
+                </aside>
+              </main>
+
+              <footer className="max-w-6xl mx-auto p-6 text-center text-slate-500 text-sm">Built with ❤️ by WSL-Lite — <a className="text-cyan-300" href="#">Contribute on GitHub</a></footer>
+            </div>
+
+
+      ) : (
+  // ✅ PROFILES SLIDE (NEW DESIGN)
+  <div className="min-h-screen px-6 py-12 flex flex-col">
+    <h2 className="text-4xl font-extrabold mb-10 text-center text-cyan-400">
+      Choose Your WSL-Lite Profile
+    </h2>
+
+    {/* ✅ Hover Popup Modal */}
+    {popupProfile && (
+      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 w-[400px] shadow-xl">
+          <h3 className="text-2xl font-bold mb-3 text-cyan-300">{popupProfile.title}</h3>
+          <p className="text-slate-400 text-sm mb-4">{popupProfile.desc}</p>
+
+          <div className="max-h-64 overflow-y-auto space-y-2 pr-2">
+            {popupProfile.libs.map((lib) => (
+              <div
+                key={lib.id}
+                className="bg-slate-900/50 p-3 rounded-lg border border-slate-700 flex items-center gap-3"
+              >
+                <Icon id={lib.id} className="w-6 h-6" />
+                <span className="text-slate-200">{lib.name}</span>
+              </div>
+            ))}
+          </div>
+
+          <button
+            onClick={() => setPopupProfile(null)}
+            className="w-full mt-6 py-2 rounded-md bg-slate-700 hover:bg-slate-600 text-white"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    )}
+
+    {/* ✅ Profile + Customize Grid */}
+    <div className="max-w-6xl mx-auto grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+      {/* ✅ CLI / DEV / DATA cards */}
+      {Object.keys(PROFILES).map((key) => {
+        const profile = PROFILES[key];
+        return (
+          <motion.div
+            key={key}
+            whileHover={{ scale: 1.03 }}
+            transition={{ duration: 0.3 }}
+            onClick={() => setPopupProfile(profile)}
+            className="cursor-pointer p-6 bg-slate-800/80 rounded-2xl border border-slate-700 shadow-xl hover:shadow-cyan-700/30 h-[180px] flex flex-col justify-between"
+          >
+            <div>
+              <h3 className="text-xl font-bold text-white">{profile.title}</h3>
+              <p className="text-xs text-slate-400 mt-1">{profile.desc}</p>
+            </div>
+
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                fakeInstall(key);
+              }}
+              className="mt-4 bg-cyan-500 hover:bg-cyan-400 text-black py-2 rounded-md font-semibold"
+            >
+              Install
+            </button>
+          </motion.div>
+        );
+      })}
+
+      {/* ✅ CUSTOMIZE CARD */}
+      <motion.div
+        whileHover={{ scale: 1.03 }}
+        transition={{ duration: 0.3 }}
+        className="p-6 bg-slate-800/90 rounded-2xl border border-slate-700 shadow-xl hover:shadow-cyan-700/30 h-[420px] flex flex-col"
+      >
+        <h3 className="text-2xl font-bold text-cyan-300 mb-2">Customize</h3>
+        <p className="text-slate-400 text-sm mb-4">
+          Build your own WSL-Lite setup by selecting the libraries you want.
+        </p>
+
+        {/* ✅ Search Bar */}
+        <input
+          type="text"
+          placeholder="Search libraries..."
+          value={customQuery}
+          onChange={(e) => setCustomQuery(e.target.value)}
+          className="w-full bg-slate-900/70 border border-slate-700 rounded-md px-3 py-2 text-slate-200 focus:border-cyan-500 mb-4"
+        />
+
+        {/* ✅ Scrollable Library List */}
+        <div className="flex-1 overflow-y-auto pr-2 space-y-2">
+          {ALL_LIBS.filter((lib) =>
+            lib.name.toLowerCase().includes(customQuery.toLowerCase())
+          ).map((lib) => (
+            <div
+              key={lib.id}
+              className="flex items-center justify-between bg-slate-900/50 p-3 rounded-lg border border-slate-700"
+            >
+              <div className="flex items-center gap-3">
+                <Icon id={lib.id} className="w-6 h-6" />
+                <span className="text-slate-200">{lib.name}</span>
+              </div>
+              <button
+                onClick={() => toggleCustomLib(lib.id)}
+                className={`px-3 py-1 text-xs rounded-md ${
+                  customLibs.has(lib.id)
+                    ? "bg-cyan-600 text-white"
+                    : "border border-slate-700 text-slate-300"
+                }`}
+              >
+                {customLibs.has(lib.id) ? "Remove" : "Add"}
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* ✅ Install */}
+        <button
+          onClick={() => fakeInstall("custom")}
+          className="mt-4 bg-cyan-500 hover:bg-cyan-400 text-black py-2 rounded-md font-semibold"
+        >
+          Install Custom Profile
+        </button>
+      </motion.div>
+    </div>
+
+    {/* Back Button */}
+    <div className="text-center mt-12">
+      <button
+        onClick={() => {
+          setDirection(-1);
+          setCurrentSlide(0);
+        }}
+        className="text-cyan-400 hover:text-cyan-300 text-lg"
+      >
+        ↑ Back to Home
+      </button>
+    </div>
+  </div>
+)
+
+
+        }
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}
