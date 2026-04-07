@@ -97,7 +97,7 @@ Access the app at **http://localhost:3000**.
 ### 📥 Clone the Repository
 To get started, clone the WSL Lite project from GitHub:
 ```bash
-git clone https://github.com/ReaalSATYAM/WSL-lite.git
+git clone https://github.com/salonigarg1328/WSL-Lite.git
 cd wsl-lite
 ```
 ---
