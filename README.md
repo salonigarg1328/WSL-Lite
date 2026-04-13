@@ -101,6 +101,11 @@ git clone https://github.com/salonigarg1328/WSL-Lite.git
 cd wsl-lite
 ```
 ---
+## Deploy Link
+https://wsl-lite.vercel.app/
+
+---
+---
 
 ## 🌟 Acknowledgements
 
