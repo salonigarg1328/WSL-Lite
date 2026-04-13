@@ -440,7 +440,7 @@ export default function WslLiteLanding() {
       : PROFILES[profileKey]?.libs.map((lib) => lib.name) ?? [];
 
   try {
-    const response = await fetch("http://localhost:5000/install-profile", {
+    const response = await fetch("https://wsl-lite-backend.onrender.com", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -46,6 +46,7 @@
     ],
     "custom-lite": [
         "bash",
+        "wget",
         "git"
     ],
     "cli-lite": [
